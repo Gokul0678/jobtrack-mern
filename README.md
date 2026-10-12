@@ -2,7 +2,9 @@
 
 A full-stack web app that helps job seekers keep track of every application in one place: save the company and role, update the stage as things progress, and see the whole pipeline at a glance.
 
-**Live demo:** _add your Vercel link here_ &nbsp;|&nbsp; **API:** _add your Render link here_
+**Live demo:** [jobtrack-mern.vercel.app](https://jobtrack-mern.vercel.app) &nbsp;|&nbsp; **API:** [jobtrack-mern-khmi.onrender.com](https://jobtrack-mern-khmi.onrender.com/api/health)
+
+> Hosted on free tiers (Vercel, Render and MongoDB Atlas), so the first load after a quiet period can take up to ~30 seconds while the server wakes up.
 
 ## Screenshots
 
@@ -107,6 +109,8 @@ npm run dev               # http://localhost:5173
 Never commit your `.env` file. It is already listed in `.gitignore`.
 
 ## Deployment
+This project is deployed on free tiers:
+
 - **Database:** MongoDB Atlas (free M0 cluster)
 - **Backend:** Render (root directory `server`, build command `npm install`, start command `npm start`; set `MONGO_URI`, `JWT_SECRET` and `CLIENT_URL` as environment variables)
 - **Frontend:** Vercel (root directory `client`; set `VITE_API_URL` to the Render URL)
