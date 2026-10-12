@@ -1,21 +1,45 @@
 # JobTrack – Job Application Tracker (MERN)
 
-A full-stack app to track job applications: secure login, add/edit/delete applications, search, status filters and a live dashboard.
+A full-stack web app that helps job seekers keep track of every application in one place: save the company and role, update the stage as things progress, and see the whole pipeline at a glance.
 
-**Live demo:** _add your Vercel link here_  |  **API:** _add your Render link here_
+**Live demo:** _add your Vercel link here_ &nbsp;|&nbsp; **API:** _add your Render link here_
+
+## Screenshots
+
+### Login and registration
+![JobTrack login page](docs/login.png)
+
+### Dashboard with status filter
+Status counts update automatically. The list below is filtered to show only applications in the **Interview** stage.
+
+![Dashboard filtered by Interview status](docs/dashboard-filter-interview.png)
+
+### Search and filter together
+Search by company or role and combine it with the status filter.
+
+![Searching for a company while filtering by status](docs/search-and-filter.png)
+
+> The applications shown in the screenshots are sample demo data.
 
 ## Features
-- JWT authentication (register / login) with bcrypt-hashed passwords
-- Full CRUD for applications, scoped per user (users only see their own data)
-- Search by company or role, filter by status, quick status change
-- Dashboard counts per status using a MongoDB aggregation
-- Responsive React UI
+- **Secure authentication:** register and log in with JWT; passwords are hashed with bcrypt
+- **Private data:** every user sees only their own applications
+- **Full CRUD:** add, edit and delete applications (company, role, status, job link, notes)
+- **Pipeline stages:** Applied, Interview, Offer and Rejected, changeable from a dropdown on each card
+- **Live dashboard:** status counts calculated with a MongoDB aggregation
+- **Search and filter:** find applications by company or role, and filter by status
+- **Responsive UI** built with React
 
 ## Tech Stack
-React (Vite), Node.js, Express.js, MongoDB (Mongoose), JWT, bcryptjs
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Vite, CSS |
+| Backend | Node.js, Express.js |
+| Database | MongoDB (Atlas), Mongoose |
+| Auth | JSON Web Tokens (JWT), bcryptjs |
 
 ## Backend Architecture
-Layered structure: **routes -> controllers -> services -> models**, so HTTP handling, business logic and data access stay separate.
+The server uses a layered structure: **routes → controllers → services → models**. This keeps HTTP handling, business logic and data access separate and easy to test.
 
 ```
 server/
@@ -32,31 +56,67 @@ server/
 ```
 
 ## API
+All `/api/jobs` routes require the header `Authorization: Bearer <token>`.
+
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | /api/auth/register | Create account |
-| POST | /api/auth/login | Log in, returns JWT |
-| GET | /api/jobs?status=&q= | List, filter, search |
-| GET | /api/jobs/stats | Counts per status |
-| POST | /api/jobs | Add application |
-| PUT | /api/jobs/:id | Update application |
-| DELETE | /api/jobs/:id | Delete application |
+| POST | `/api/auth/register` | Create an account |
+| POST | `/api/auth/login` | Log in and receive a JWT |
+| GET | `/api/jobs?status=&q=` | List applications, with optional status filter and search |
+| GET | `/api/jobs/stats` | Count of applications per status |
+| POST | `/api/jobs` | Add an application |
+| PUT | `/api/jobs/:id` | Update an application |
+| DELETE | `/api/jobs/:id` | Delete an application |
 
-## Run locally
+## Run Locally
+
+### Prerequisites
+- Node.js 18 or higher
+- A free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster (or a local MongoDB installation)
+
+### 1. Backend
 ```bash
-# 1. Backend  (needs MongoDB running locally, or a MongoDB Atlas URI)
 cd server
-cp .env.example .env      # set MONGO_URI and JWT_SECRET
+cp .env.example .env      # on Windows: copy .env.example .env
+```
+Edit `.env`:
+```
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@YOUR-CLUSTER.mongodb.net/jobtrack?retryWrites=true&w=majority
+JWT_SECRET=a_long_random_string
+CLIENT_URL=http://localhost:5173
+PORT=5000
+```
+Generate a strong secret with:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+Then install and start:
+```bash
 npm install
 npm run dev               # http://localhost:5000
+```
 
-# 2. Frontend (new terminal)
+### 2. Frontend
+Open a second terminal:
+```bash
 cd client
 npm install
 npm run dev               # http://localhost:5173
 ```
 
-## Deploy (free)
-1. **Database:** create a free cluster on MongoDB Atlas, copy the connection string.
-2. **Backend on Render:** New Web Service, root directory `server`, build `npm install`, start `npm start`. Env vars: `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL` (your Vercel URL).
-3. **Frontend on Vercel:** import the repo, root directory `client`, env var `VITE_API_URL` = your Render URL.
+Never commit your `.env` file. It is already listed in `.gitignore`.
+
+## Deployment
+- **Database:** MongoDB Atlas (free M0 cluster)
+- **Backend:** Render (root directory `server`, build command `npm install`, start command `npm start`; set `MONGO_URI`, `JWT_SECRET` and `CLIENT_URL` as environment variables)
+- **Frontend:** Vercel (root directory `client`; set `VITE_API_URL` to the Render URL)
+
+## What I Learned
+- Designing a layered REST API and keeping business logic out of route handlers
+- Protecting routes with JWT middleware and scoping every query to the logged-in user
+- Using MongoDB aggregation to build dashboard statistics
+- Handling errors consistently with a central error handler
+
+## Author
+**Gokul P M**
+[LinkedIn](https://www.linkedin.com/in/gokul-p-m135) · [GitHub](https://github.com/Gokul0678) · gokul.pm135@gmail.com
